@@ -287,7 +287,7 @@ class ScholarArticle(object):
         # ordering index:
         self.attrs = {
             'title':         [None, 'Title',          0],
-            'authors':       [None, 'Author',         1],
+            'authors':       [None, 'Authors',        1],
             'url':           [None, 'URL',            2],
             'year':          [None, 'Year',           3],
             'num_citations': [0,    'Citations',      4],
