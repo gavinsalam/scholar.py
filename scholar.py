@@ -287,16 +287,17 @@ class ScholarArticle(object):
         # ordering index:
         self.attrs = {
             'title':         [None, 'Title',          0],
-            'url':           [None, 'URL',            1],
-            'year':          [None, 'Year',           2],
-            'num_citations': [0,    'Citations',      3],
-            'num_versions':  [0,    'Versions',       4],
-            'cluster_id':    [None, 'Cluster ID',     5],
-            'url_pdf':       [None, 'PDF link',       6],
-            'url_citations': [None, 'Citations list', 7],
-            'url_versions':  [None, 'Versions list',  8],
-            'url_citation':  [None, 'Citation link',  9],
-            'excerpt':       [None, 'Excerpt',       10],
+            'authors':       [None, 'Author',         1],
+            'url':           [None, 'URL',            2],
+            'year':          [None, 'Year',           3],
+            'num_citations': [0,    'Citations',      4],
+            'num_versions':  [0,    'Versions',       5],
+            'cluster_id':    [None, 'Cluster ID',     6],
+            'url_pdf':       [None, 'PDF link',       7],
+            'url_citations': [None, 'Citations list', 8],
+            'url_versions':  [None, 'Versions list',  9],
+            'url_citation':  [None, 'Citation link', 10],
+            'excerpt':       [None, 'Excerpt',       11],
         }
 
         # The citation data in one of the standard export formats,
@@ -606,8 +607,15 @@ class ScholarArticleParser120726(ScholarArticleParser):
                         span.clear()
                     self.article['title'] = ''.join(tag.h3.findAll(text=True))
 
-                if tag.find('div', {'class': 'gs_a'}):
-                    year = self.year_re.findall(tag.find('div', {'class': 'gs_a'}).text)
+
+                gs_a = tag.find('div', {'class': 'gs_a'})
+                if gs_a:
+                    # watch out, in the string below, the first space is a non-breaking space
+                    # (\xa0)
+                    m = re.search(r'(.*) - (.*)', gs_a.text)
+                    if (m): 
+                        self.article['authors'] = m.group(1)
+                    year = self.year_re.findall(gs_a.text)
                     self.article['year'] = year[0] if len(year) > 0 else None
 
                 if tag.find('div', {'class': 'gs_fl'}):
